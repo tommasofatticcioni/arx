@@ -1,0 +1,44 @@
+# Workspace manifest.
+#
+# Comparison: this file is the Rust equivalent of a .NET solution (.sln) or a
+# Maven parent pom.xml. It contains no code. It lists the member packages and
+# holds settings they share. Cargo builds all members into ONE shared `target/`
+# folder and resolves their dependencies into ONE `Cargo.lock`.
+#
+# Vocabulary:
+#   package = a folder with a Cargo.toml (like a .csproj or a Maven module)
+#   crate   = one compilation unit a package produces: a library or a binary
+
+[workspace]
+# The dependency resolver version. A workspace with no root package must set it
+# explicitly. "3" is the current one (it also respects each crate's minimum
+# Rust version when picking dependency versions).
+resolver = "3"
+
+# The member packages, as paths relative to this file.
+members = ["crates/core", "crates/cli"]
+
+# Values that member packages inherit, so they are written once.
+# A member opts in per field with `<field>.workspace = true`.
+[workspace.package]
+version = "0.1.0"
+# The Rust "edition" is a language dialect, like C# LangVersion or a Java
+# source level. Editions are opt-in and crates of different editions interoperate.
+edition = "2024"
+license = "MIT"
+repository = "https://github.com/tommasofatticcioni/arx"
+# Makes `cargo publish` refuse to run. The crates are never published on crates.io.
+publish = false
+
+# Lints shared by every member that sets `[lints] workspace = true`.
+[workspace.lints.rust]
+# `unsafe` is Rust's escape hatch from its memory-safety checks (raw pointers,
+# calling C). "forbid" makes any use of it a compile error that cannot be
+# overridden inside our code. Our dependencies may still use it internally.
+unsafe_code = "forbid"
+
+[workspace.lints.clippy]
+# Clippy is the standard Rust linter (think ESLint / Roslyn analyzers).
+# `all` is its default set of lints. They are warnings locally; CI will turn
+# warnings into errors with `-D warnings`.
+all = "warn"

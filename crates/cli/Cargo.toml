@@ -1,0 +1,29 @@
+# Package manifest for the command-line client.
+
+[package]
+name = "arx-cli"
+
+# Inherited from [workspace.package] in the root Cargo.toml.
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+publish.workspace = true
+
+# Apply the lints defined in [workspace.lints] in the root Cargo.toml.
+[lints]
+workspace = true
+
+# By default the executable would be named after the package: `arx-cli.exe`.
+# This section renames it so the command is just `arx`.
+# (`[[double brackets]]` is TOML for "one entry of an array of tables": a
+# package may define several binaries, each with its own [[bin]] section.)
+[[bin]]
+name = "arx"
+path = "src/main.rs"
+
+[dependencies]
+# A dependency that lives in this repository is referenced by its folder,
+# relative to THIS file (like a ProjectReference in .NET or a workspace
+# dependency in npm/pnpm). The key is the other package's name.
+arx-core = { path = "../core" }
