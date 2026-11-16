@@ -1,0 +1,39 @@
+# Rust
+target/
+**/*.rs.bk
+
+# Node / frontend
+node_modules/
+dist/
+.vite/
+
+# Tauri / Android build output
+apps/app/src-tauri/gen/
+*.apk
+*.aab
+.gradle/
+local.properties
+
+# Extension build output
+web-ext-artifacts/
+
+# Secrets and local data: never commit these
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.keystore
+*.jks
+*.db
+*.sqlite
+*.sqlite3
+*.vault
+*.backup
+
+# Editors and OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
