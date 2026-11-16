@@ -1,6 +1,6 @@
-# password-manager
+# Arx
 
-A personal, self-hosted, zero-knowledge password manager written in Rust.
+*Arx* is Latin for "citadel". A personal, self-hosted, zero-knowledge password manager written in Rust.
 
 > **Status: planning.** There is no code yet. This repository currently holds
 > the design documents and the roadmap.
@@ -25,13 +25,15 @@ A personal, self-hosted, zero-knowledge password manager written in Rust.
 
 ## Components
 
-| Path | What it is | Status |
-|---|---|---|
-| `crates/core` | Rust library: crypto, key hierarchy, vault model, generator, TOTP, backup format | planned |
-| `crates/cli` | Command-line client built on the core | planned |
-| `crates/server` | Sync and account server | planned |
-| `apps/app` | Tauri 2 app for Windows and Android (React + TypeScript on Vite) | planned |
-| `apps/extension` | Firefox extension | planned |
+| Path | Package | What it is | Status |
+|---|---|---|---|
+| `crates/core` | `arx-core` | Rust library: crypto, key hierarchy, vault model, generator, TOTP, backup format | planned |
+| `crates/cli` | `arx-cli` (command: `arx`) | Command-line client built on the core | planned |
+| `crates/server` | `arx-server` | Sync and account server | planned |
+| `apps/app` | | Tauri 2 app for Windows and Android (React + TypeScript on Vite) | planned |
+| `apps/extension` | | Firefox extension | planned |
+
+The crates are not published on crates.io.
 
 ## Documentation
 
