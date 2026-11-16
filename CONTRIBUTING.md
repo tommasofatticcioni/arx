@@ -38,7 +38,7 @@ Example: `feat(core): derive master key with Argon2id`
 
 ## Before opening a pull request
 
-Once the Cargo workspace exists (milestone 0), these must pass locally:
+CI runs these on every pull request. Run them locally first:
 
 ```bash
 cargo fmt --all -- --check
@@ -50,6 +50,13 @@ cargo clippy --workspace --all-targets -- -D warnings
 
 ```bash
 cargo test --workspace
+```
+
+When dependencies change, also run the dependency checks
+(install once with `cargo install --locked cargo-deny`):
+
+```bash
+cargo deny check
 ```
 
 ## Rules for anything that touches secrets

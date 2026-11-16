@@ -1,0 +1,96 @@
+# Continuous integration.
+#
+# A workflow is a set of jobs that GitHub runs on its own machines ("runners")
+# when something happens in the repository. Each job starts on a fresh virtual
+# machine, so nothing carries over between jobs or runs except what is cached
+# explicitly.
+
+name: CI
+
+# When the workflow runs.
+on:
+  # Every pull request: this is the gate before anything reaches main.
+  pull_request:
+  # Every push to main: confirms main itself is healthy after a merge.
+  push:
+    branches: [main]
+  # Every Monday at 06:00 UTC, even with no code change. A dependency that was
+  # fine last week can have a vulnerability published against it this week.
+  schedule:
+    - cron: "0 6 * * 1"
+  # Allows starting a run by hand from the Actions tab.
+  workflow_dispatch:
+
+# The token GitHub gives each run can read the repository and nothing else.
+# The default can include write access; a CI run never needs it.
+permissions:
+  contents: read
+
+# If a new commit is pushed to a branch while its previous run is still going,
+# cancel the old run: its result no longer matters.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # Coloured cargo output in the logs.
+  CARGO_TERM_COLOR: always
+  # Turn every compiler warning into an error, for all cargo commands below.
+  RUSTFLAGS: -D warnings
+
+jobs:
+  # Formatting, lints and tests.
+  check:
+    name: Check (${{ matrix.os }})
+    # Run the same steps on Linux and on Windows. Windows is a platform we
+    # ship on; Linux is where the server will run.
+    strategy:
+      # Let the other OS finish even if one fails, so we see both results.
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      # Third-party actions are pinned to an exact commit, not a tag like "v7".
+      # A tag can be moved to different code later; a commit hash cannot.
+      # The comment after each hash records which release it is.
+      - name: Check out the code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Do not leave the GitHub token in the checked-out .git/config.
+          persist-credentials: false
+
+      # Runners ship with rustup. With no arguments this installs exactly the
+      # version and components listed in rust-toolchain.toml.
+      - name: Install the Rust toolchain
+        run: rustup toolchain install
+
+      # Reuses compiled dependencies between runs, keyed on Cargo.lock.
+      - name: Cache build output
+        uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+
+      - name: Check formatting
+        run: cargo fmt --all -- --check
+
+      # --locked: fail if Cargo.lock is out of date instead of silently
+      # updating it. CI must build exactly what was committed.
+      - name: Lint
+        run: cargo clippy --workspace --all-targets --locked -- -D warnings
+
+      - name: Test
+        run: cargo test --workspace --locked
+
+  # Dependency checks. See deny.toml for what is enforced.
+  dependencies:
+    name: Dependencies
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out the code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      # Runs `cargo deny check`: known vulnerabilities, licences, banned or
+      # duplicated crates, and where crates are downloaded from.
+      - name: cargo-deny
+        uses: EmbarkStudios/cargo-deny-action@70f81531115945ba6eb6b941ec9d39d063438eb9 # v2.1.2

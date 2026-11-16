@@ -1,0 +1,56 @@
+# Configuration for cargo-deny, which checks the dependency tree.
+# Run locally with:  cargo deny check
+# Install with:      cargo install --locked cargo-deny
+#
+# It runs four checks, one per section below. For a password manager the
+# dependency tree is part of the attack surface, so the defaults here are strict
+# and every exception has to be written down in this file.
+
+[graph]
+# Check dependencies for every feature combination, not only the default one.
+all-features = true
+
+# 1. Known vulnerabilities, from the RustSec advisory database
+#    (https://rustsec.org). This is the same database `cargo audit` uses.
+[advisories]
+# A "yanked" version is one its author withdrew from crates.io, usually
+# because it is broken or unsafe. Refuse to depend on one.
+yanked = "deny"
+# Advisories we have reviewed and decided to accept, each with a reason.
+# Empty, and it should stay that way.
+ignore = []
+
+# 2. Licences. Every dependency must use a licence from this list, so nothing
+#    with terms incompatible with our MIT licence slips in unnoticed.
+[licenses]
+allow = [
+    "MIT",
+    "Apache-2.0",
+    "Apache-2.0 WITH LLVM-exception",
+    "BSD-2-Clause",
+    "BSD-3-Clause",
+    "ISC",
+    "Unicode-3.0",
+    "Zlib",
+]
+# How sure the tool must be when it identifies a licence from a file's text.
+confidence-threshold = 0.9
+
+# 3. Bans.
+[bans]
+# Two versions of the same crate in the tree means two copies of that code to
+# trust. A warning, not an error: it is often outside our control.
+multiple-versions = "warn"
+# A version requirement of "*" accepts any future release. Not allowed.
+wildcards = "deny"
+# Our own crates refer to each other by path with no version
+# (arx-core = { path = "../core" }), which counts as a wildcard. Allow that.
+allow-wildcard-paths = true
+
+# 4. Sources. Crates may only come from crates.io. No other registries and no
+#    git repositories, which bypass crates.io's immutability guarantees.
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+allow-git = []
