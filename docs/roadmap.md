@@ -8,8 +8,9 @@ tested. A milestone starts by settling the open decisions listed for it in
 
 - [x] Design documents
 - [x] GitHub repository, licence, contribution workflow
-- [ ] Cargo workspace with empty `core` and `cli` crates
-- [ ] CI: format check, lints, tests, `cargo audit`, `cargo deny`
+- [x] Cargo workspace with `core` and `cli` crates
+- [x] CI: format check, lints, tests on Linux and Windows, and `cargo deny`
+      (vulnerabilities, licences, bans, sources)
 
 **Done when:** a pull request runs CI and passes.
 

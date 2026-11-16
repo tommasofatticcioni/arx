@@ -26,7 +26,7 @@ audited yet. Items marked **Open** are not decided.
 | A device is lost or stolen while locked | Vault is encrypted at rest; keys exist in memory only while unlocked |
 | Online password guessing against the server | Rate limiting and lockout on authentication endpoints |
 | A malicious web page tries to get credentials autofilled | Autofill matches the exact site origin and requires a user action; no filling into hidden or cross-origin frames |
-| A vulnerable or malicious dependency | Minimal dependencies, `cargo audit` and `cargo deny` in CI, lockfile committed |
+| A vulnerable or malicious dependency | Minimal dependencies, `cargo deny` in CI, lockfile committed |
 | Secrets left behind in memory, clipboard or logs | Keys wiped from memory after use, auto-lock, clipboard cleared after a timeout, secrets never logged |
 | Forgotten master password | Recovery key and recovery passphrase (see below) |
 
@@ -137,8 +137,11 @@ the same way.
 
 - Dependencies kept to a minimum and reviewed before being added
 - `Cargo.lock` and the frontend lockfile are committed
-- CI runs `cargo audit` (known vulnerabilities) and `cargo deny` (licences,
-  sources, duplicates) on every pull request
+- CI runs `cargo deny` on every pull request and once a week: known
+  vulnerabilities (the RustSec database, the same one `cargo audit` uses),
+  licences, duplicate crates, and download sources. The rules are in
+  `deny.toml`
+- GitHub Actions used by CI are pinned to exact commits
 
 ## Status
 
