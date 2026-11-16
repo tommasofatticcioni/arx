@@ -1,0 +1,7 @@
+# Pins the Rust toolchain for everyone who builds this repository, including CI.
+# `rustup` reads this file automatically whenever you run cargo in this folder
+# and installs the listed version if it is missing.
+
+[toolchain]
+channel = "1.100.0"
+components = ["rustfmt", "clippy"]

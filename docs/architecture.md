@@ -32,7 +32,13 @@ plaintext item.
 
 ## Components
 
-### `crates/core` (Rust library)
+The project is named **Arx**. Rust packages carry an `arx-` prefix
+(`arx-core`, `arx-cli`, `arx-server`) because `core` is already the name of a
+crate built into Rust. Folder names stay short. The packages are not published
+on crates.io (`publish = false`), where `arx` and `arx-core` belong to
+unrelated projects.
+
+### `crates/core` (Rust library, package `arx-core`)
 
 The only place that touches secrets. Every client uses it, so the security
 logic exists once.
@@ -108,11 +114,11 @@ at the start of the milestone that needs them and recorded here.
 ## Planned repository layout
 
 ```
-password-manager/
+arx/
 ├── crates/
-│   ├── core/
-│   ├── cli/
-│   └── server/
+│   ├── core/         package arx-core
+│   ├── cli/          package arx-cli, binary arx
+│   └── server/       package arx-server
 ├── apps/
 │   ├── app/          Tauri 2 + React
 │   └── extension/    Firefox extension

@@ -1,6 +1,6 @@
 # Working agreement for Claude
 
-This is a learning project. The owner is an experienced developer (TypeScript,
+Arx is a self-hosted password manager and a learning project. The owner is an experienced developer (TypeScript,
 JavaScript, Java, C#) who is new to Rust.
 
 ## How to work here
